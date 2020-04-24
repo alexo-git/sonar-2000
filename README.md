@@ -41,18 +41,18 @@ The dedicated step-up switch coverter can be used to get such high voltage, but 
 The gain if logarithmic amplifier about 100 db, so even small noise can limit sensetivity!
 Also, the low-noise high-voltage step-up converter is expensive (for example LT3482 ~ $5)
 I met both requirements with a hybrid software / hardware solution - the microcontroller software has become part of the boost converter!
-The hardware part of converter is Q5, D3, L3, C22. It is regular step-up converer topology. The microcontroller produce pulses for
-Q5  and 'pumping' voltage on C22. The microcontroller measure voltage on voltage divider R16/R22 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
+The hardware part of converter is Q4, L2, D3, C13. It is regular step-up converer topology. The microcontroller produce pulses for
+Q5  and 'pumping' voltage on C13. The microcontroller measure voltage on voltage divider R14/R19 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
 The microcontroller DOES NOT pump while receiving an echo and have 'zero noise' during measurement!
 This “pumping” process is very fast - less than 1ms and performed between pulses.
 
 #### Transducer amplifier
 Transducer amplifier should operate with high voltage (100V) and high capacitance loading on frequency ~200 KHz.
-The amplifier designed on transistors Q2 and Q3 which is push-poll stage and Q4 which is current-protection circuit. 
+The amplifier designed on transistors Q2 and Q3.
+It is unclear, but this is push-poll stage (the transducer charged with Q2 and discharged thru Q3 and D4).
 This very simple and great solution described in detail in Horowitz and Hill, “Art of Electronics” book.
 The exitation pulses (TX_PULSE) is produced by MCU. 
-The filter L2/C21 block 200 KHz path during receive phase.
-Important things - after transmit pulses keep Q3 closed (0V gate) - this will prevent current flow thru R12 and discharge C22.
+Important things - after transmit pulses keep Q3 closed (0V gate) - this will prevent current flow thru R12 and discharge C13.
 
 
 #### MCU and stepper-motor driver
