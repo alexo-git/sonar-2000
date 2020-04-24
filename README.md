@@ -31,7 +31,7 @@ All another blocks of RF-receiver (like mixer and demodulator) is not used.
 To improve selectivity and noise resistance LNA based on tuned amplifier is used (transistor Q1, MMBT5089L).
 Diodes D1 and D2 protect LNA input from high voltage signals during transducer exitate.
 Output of the amplifier connected to ADC of the microcontroller. 
-C11 capacitor together with output impedance of MC3371 used as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
+C18 capacitor together with output impedance of MC3371 used as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
 Note: Today the MC3371 chip is out of production but it can be replaced with many other alternatives, for example SA614A (~ $3).
 Also possible to use cheap RF power meter chip (e.g LT5537, AD8310).
 
@@ -41,17 +41,19 @@ The dedicated step-up switch coverter can be used to get such high voltage, but 
 The gain if logarithmic amplifier about 100 db, so even small noise can limit sensetivity!
 Also, the low-noise high-voltage step-up converter is expensive (for example LT3482 ~ $5)
 I met both requirements with a hybrid software / hardware solution - the microcontroller software has become part of the boost converter!
-The hardware part of converter is Q5, D3, L2, C13. It is regular step-up converer topology. The microcontroller produce pulses for
-Q5  and 'pumping' voltage on C13. The microcontroller measure voltage on voltage divider R13/R20 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
+The hardware part of converter is Q5, D3, L3, C22. It is regular step-up converer topology. The microcontroller produce pulses for
+Q5  and 'pumping' voltage on C22. The microcontroller measure voltage on voltage divider R16/R22 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
 The microcontroller DOES NOT pump while receiving an echo and have 'zero noise' during measurement!
 This “pumping” process is very fast - less than 1ms and performed between pulses.
 
 #### Transducer amplifier
 Transducer amplifier should operate with high voltage (100V) and high capacitance loading on frequency ~200 KHz.
-The amplifier designed on transistors Q4 and Q2 which is push-poll stage and Q3 which is current-protection circuit. 
+The amplifier designed on transistors Q2 and Q3 which is push-poll stage and Q4 which is current-protection circuit. 
 This very simple and great solution described in detail in Horowitz and Hill, “Art of Electronics” book.
-The exitation pulses is produced by MCU. 
-Important things - after transmit pulses keep Q4 closed (0V gate) - this will prevent current flow thru R12 and discharge C13.
+The exitation pulses (TX_PULSE) is produced by MCU. 
+The filter L2/C21 block 200 KHz path during receive phase.
+Important things - after transmit pulses keep Q3 closed (0V gate) - this will prevent current flow thru R12 and discharge C22.
+
 
 #### MCU and stepper-motor driver
 The microcontroller perform all tasks for initialization, host communication and manage boost converter, rx/tx and stepper motor.
