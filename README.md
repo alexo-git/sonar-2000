@@ -28,7 +28,7 @@ At the time this device was developed, a good logarithmic amplifier cost even mo
 Therefore, to comply with budgetary restrictions, I went for a trick - I used an inexpensive RF receiver chip (MC3371) with RSSI output.
 The RSSI (Received Signal Strength Indicator) actually have logarithmic gain characteristics!
 All another blocks of RF-receiver (like mixer and demodulator) is not used.
-To improve selectivity and noise resistent of the device LNA with LC-tank is used (transistor Q1, MMBT5089L).
+To improve selectivity and noise resistance of the device LNA with LC-tank is used (transistor Q1, MMBT5089L).
 Diodes D1 and D2 protect LNA input from high voltage signals during transducer exitate.
 Output of the amplifier connected to ADC of the microcontroller. 
 C11 capacitor together with output impedance of MC3371 used as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
