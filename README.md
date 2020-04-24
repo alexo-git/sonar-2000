@@ -22,13 +22,13 @@ Hardware design have three main part:
 The signals received by transducer have huge dynamic range - up to 90-100db.
 So big range is need to accept echo from objects located on very different distance - from 1 meter up to 1 km.
 Usually, to match such strong dynamic range requirements logarithmic amplifiers is used.
-Also, logarithmic amplifier 'compressed' signal and low-cost ADC with 10-12 bit can be used.
+Also, logarithmic amplifier compress signal and low-cost ADC with 10-12 bit can be used.
 But good logarithmic amplifier quite expensive (for example AD8310 price ~ $10 / 10 pcs).
 At the time this device was developed, a good logarithmic amplifier cost even more - up to $ 25 in 1999!
 Therefore, to comply with budgetary restrictions, I went for a trick - I used an inexpensive RF receiver chip (MC3371) with RSSI output.
 The RSSI (Received Signal Strength Indicator) actually have logarithmic gain characteristics!
 All another blocks of RF-receiver (like mixer and demodulator) is not used.
-To improve selectivity and noise resistance of the device LNA with LC-tank is used (transistor Q1, MMBT5089L).
+To improve selectivity and noise resistance LNA based on tuned amplifier is used (transistor Q1, MMBT5089L).
 Diodes D1 and D2 protect LNA input from high voltage signals during transducer exitate.
 Output of the amplifier connected to ADC of the microcontroller. 
 C11 capacitor together with output impedance of MC3371 used as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
@@ -43,7 +43,7 @@ Also, the low-noise high-voltage step-up converter is expensive (for example LT3
 I met both requirements with a hybrid software / hardware solution - the microcontroller software has become part of the boost converter!
 The hardware part of converter is Q5, D3, L2, C13. It is regular step-up converer topology. The microcontroller produce pulses for
 Q5  and 'pumping' voltage on C13. The microcontroller measure voltage on voltage divider R13/R20 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
-The microcontroller DOES NOT pump while receiving an echo and get 'zero noise' during measurement!
+The microcontroller DOES NOT pump while receiving an echo and have 'zero noise' during measurement!
 This “pumping” process is very fast - less than 1ms and performed between pulses.
 
 #### Transducer amplifier
