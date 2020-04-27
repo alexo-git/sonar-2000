@@ -28,26 +28,26 @@ At the time this device was developed, a good logarithmic amplifier cost even mo
 Therefore, to comply with budgetary restrictions, I went for a trick - I used an inexpensive RF receiver chip (MC3371) with RSSI output.
 The RSSI (Received Signal Strength Indicator) actually have logarithmic gain characteristics!
 All another blocks of RF-receiver (like mixer and demodulator) is not used.
-To improve selectivity and noise resistance LNA based on tuned amplifier is used (transistor Q1, MMBT5089L).
-Diodes D1 and D2 protect LNA input from high voltage signals during transducer exitate.
-Output of the amplifier connected to ADC of the microcontroller. 
-C18 capacitor together with output impedance of MC3371 used as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
+To improve selectivity and noise resistance tuned amplifier as first stage is used (transistor Q1, MMBT5089L).
+Diodes D1 and D2 protect input from high voltage signals during transducer excitate.
+Output of the amplifier connected to ADC input of microcontroller. 
+C18 capacitor together with output impedance of MC3371 works as RC low-pass filter (3KHz) limited bandwith for ADC (10 KHz sample rate).
 Note: Today the MC3371 chip is out of production but it can be replaced with many other alternatives, for example SA614A (~ $3).
 Also possible to use cheap RF power meter chip (e.g LT5537, AD8310).
 
 #### Boost converter
 Transducer exitate required high voltage - up to 100V.
 The dedicated step-up switch coverter can be used to get such high voltage, but need take into account that noise produced by step-up converter can degrade performance of logarithmic amplifier. 
-The gain if logarithmic amplifier about 100 db, so even small noise can limit sensetivity!
+The gain if logarithmic amplifier about 100 db, so even small noise will limit sensetivity!
 Also, the low-noise high-voltage step-up converter is expensive (for example LT3482 ~ $5)
 I met both requirements with a hybrid software / hardware solution - the microcontroller software has become part of the boost converter!
 The hardware part of converter is Q4, L2, D3, C13. It is regular step-up converer topology. The microcontroller produce pulses for
-Q5  and 'pumping' voltage on C13. The microcontroller measure voltage on voltage divider R14/R19 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for exitation pulses. 
+Q5  and 'pumping' voltage on C13. The microcontroller measure voltage on voltage divider R14/R19 and stop pumping when this value reach some threshold. This threshold can be programmed from host CPU and define voltage for excitation pulses. 
 The microcontroller DOES NOT pump while receiving an echo and have 'zero noise' during measurement!
-This “pumping” process is very fast - less than 1ms and performed between pulses.
+This “pumping” process is very fast - less than 1ms and performed between measurement cycles.
 
 #### Transducer amplifier
-Transducer amplifier should operate with high voltage (100V) and high capacitance loading on frequency ~200 KHz.
+Transducer amplifier should operate with high voltage (200V) and high capacitance loading on frequency ~200 KHz.
 The amplifier designed on transistors Q2 and Q3.
 It is unclear, but this is push-poll stage (the transducer charged with Q2 and discharged thru Q3 and D4).
 This very simple and great solution described in detail in Horowitz and Hill, “Art of Electronics” book.
