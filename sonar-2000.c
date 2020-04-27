@@ -1,15 +1,15 @@
 // ===========================================================================
 // =                      Sonar                                              =
 // = V1.00            11.06.99 First version                                 =
-// = V1.01            14.06.99 Optimozed speed, change step_up conv.         =
-// = V1.02            11.06.99 Added CRC8 in comm. protocol                  =
+// = V1.01            14.06.99 Optimized speed, change step_up conv.         =
+// = V1.02            11.06.99 Added CRC8 to comm. protocol                  =
 // = V1.03            13.09.99 corrected Send_pulses() to "send" 0 pulses    =
-// = V1.04            19.12.99 corrected seriouse error in stepper control   =
-//                             routine "one_step()"                          =
+// = V1.04            19.12.99 fix seriouse bug in stepper control           =
+//                             see "one_step()"                              =
 // = V1.05            04.02.00 added new command "TEST_MODE" for stand-alone =
 // =                           testing                                       =
 // ===========================================================================
-// =              Offner Ltd., Israel       Alex Osa                         =
+// =              Alex O, Israel 1999                                        =
 // ===========================================================================
 #include <16C76.h>        // define sfr - regiser for 16c73
 #include <usart14.h>      // define usart for 16c73
@@ -137,7 +137,7 @@ struct  incoming_pack {
    unsigned char     c_pulse_count;
    // count transmitter pulses in packet (0..127)
 
-   unsigned long     c_max_sample;     // NO LONG! see trn_x2x() !
+   unsigned long     c_max_sample;     // Obsolet, see trn_x2x() !
    // needed sample count; (0..16384)
 };
 
@@ -188,11 +188,11 @@ unsigned long  sample_cnt;        // sample counter
 unsigned char  charge_level;      // transmitter power level (0..127)
 unsigned char  cur_chrg_level;    // current charge level (updated in __INT)
 unsigned char  pulse_count;       // count transmitter pulses in packet (0..127)
-unsigned long  max_sample;        // needed sample count; (0..16384)
-unsigned char  crc;               // current CRC8 value
+unsigned long  max_sample;        // required sample count; (0..16384)
+unsigned char  crc;               // CRC8 value
 unsigned char  stepper_pos;       // current position of stepper motor
-unsigned char  sensor_pos;        // last position of stepper motor in ref. zone
-unsigned char  step_delay;        // last position of stepper motor in ref. zone
+unsigned char  sensor_pos;        // position of stepper motor when in ref. zone
+unsigned char  step_delay;        // delay for single step
 
 
 //     -------------------------------------------------------------------
@@ -211,7 +211,7 @@ unsigned long rv;
 /*================================================================
 * Name: long trn_p2l() / long trn_l2p() / 
 *
-* Description:  translate long variable in / out packed data
+* Description:  translate long variable to packed data
 *
 *================================================================*/
 
@@ -255,8 +255,8 @@ unsigned long rv;
 /*================================================================
 * Name: set_time_out
 *
-* Description:  Started TMR1; time in 0.81 ms slice, used
-*               for creation time-outs
+* Description:  Started TMR1; time in 0.81 ms tick, used
+*               for get time-outs
 *================================================================*/
   void set_time_out(unsigned char time){
     TMR1L = 0;
@@ -343,7 +343,7 @@ void __INT(void)
      } else start_receive = 0;
    }
 
-   // if an interrupt from INT0 - we in opto sensor reference zone 
+   // if an interrupt from INT0 - we are in the opto sensor reference zone 
    // flag <m_ref_zone> cleared in one_step() function after each steps
    else if (INTCON.INTF && INTCON.INTE) {
      INTCON.INTF = 0;
@@ -373,7 +373,7 @@ void __INT(void)
 /*================================================================
 * Name: stepper_power()
 *
-* Description:  setting power level for stepper motor 
+* Description:  set power level for stepper motor 
 *               
 *================================================================*/
   void stepper_power()
@@ -394,7 +394,7 @@ void __INT(void)
 /*================================================================
 * Name: receive_echo()
 *
-* Description:  starting TMR0 interrup to sample freq 10 KHz;
+* Description:  starting TMR0 interrupt to sample freq 10 KHz;
 *               see __INT0   
 *================================================================*/
   void receive_echo()
@@ -429,7 +429,7 @@ void __INT(void)
 /*================================================================
 * Name: charge_tx()
 *
-* Description:  charge output capacitors to voltage "charge_level"
+* Description:  charge output capacitors to "charge_level" voltage
 *
 *================================================================*/
  void charge_tx()
@@ -470,8 +470,8 @@ void __INT(void)
 /*================================================================
 * Name: send_pulses()
 *
-* Description:  sending to transmitter 200 Khz "pulse_count" pulses
-*               procedure has different version for different sys. clock
+* Description:  make transmitter 200 Khz "pulse_count" pulses
+*               Different version for different sys. clock
 *================================================================*/
 
 #ifdef SENSOR_200KHZ
@@ -612,7 +612,7 @@ DLUS10M
 *
 * Description:  decode sm_data and make steps to stepper motor
 *  sm_data format :
-*    0..7 bits - radar angle (in steps); if 0 rotate not need; 
+*    0..7 bits - radar angle (in steps); if 0 rotation is not need; 
 *    8,9,10,11 - power in stepper motor coil AFTER action;
 *    12th bit - direction 0 - FWRD, 1-BCWRD; 
 *               
@@ -644,7 +644,7 @@ DLUS10M
 /*================================================================
 * Name: unsigned char search_ref_lo()
 *
-* Description:  low level look up reference point; 
+* Description:  look up for reference point; 
 *               return count steps before reference zone
 *================================================================*/
   unsigned char search_ref_lo() {
@@ -673,7 +673,7 @@ DLUS10M
 /*================================================================
 * Name: search_ref()
 *
-* Description:  look up reference point
+* Description:  look up for reference point
 *               
 *================================================================*/
   void search_ref() {
